@@ -1,0 +1,35 @@
+configure(subprojects - project(':0.Reveal')) {
+    apply plugin: 'java'
+    apply plugin: "jacoco"
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+
+        compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.5'
+        compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.5'
+        testCompile 'junit:junit:4.12'
+        testCompile "org.mockito:mockito-all:1.10.19"
+    }
+
+    task copyRevealFiles(dependsOn: ":0.Reveal:prepareReveal", type: Copy) {
+        from "${project(':0.Reveal').buildDir}/reveal"
+        into file("${buildDir}/reveal")
+    }
+    task reveal(dependsOn: copyRevealFiles, type: Copy) {
+        from("src/main/reveal") {
+            filter { line -> line.replaceAll("../../../../0.Reveal/build/reveal/", "") }
+        }
+
+        into file("${buildDir}/reveal")
+    }
+}
+
+
+
+
+
+
